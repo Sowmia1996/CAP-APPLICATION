@@ -2,7 +2,7 @@
     xmlns:core="sap.ui.core"
     xmlns="sap.m"
     xmlns:l="sap.ui.layout">
-    <l:VerticalLayout core:require="{handler: 'browseBooks/custom/AddToCart/AddToCartHandler'}">
+    <l:VerticalLayout core:require="{handler: 'browseBooks/custom/CustomHandler'}">
     <!-- <StepInput
         min="0"
         max="1000"

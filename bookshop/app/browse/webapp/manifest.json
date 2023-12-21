@@ -56,9 +56,9 @@
           "controlConfiguration": {
             "@com.sap.vocabularies.UI.v1.LineItem": {
                 "columns": {
-                    "AddToCartColumn": {
+                    "AddReviewsColumn": {
                         "header": "Add Reviews",
-                        "template": "browseBooks.custom.AddToCart.AddToCart"
+                        "template": "browseBooks.custom.AddReviewButton"
                     }
                 }
             }
@@ -67,10 +67,10 @@
             "header": {
                 "actions": {
                     "createOrder": {
-                        "press": "browseBooks.custom.AddToCart.AddToCartHandler.createOrder",
+                        "press": "browseBooks.custom.CustomHandler.createOrder",
                         "visible": true,
                         "enabled": true,
-                        "text": "Go To Cart"                                         
+                        "text": "Add Items To Cart"                                       
                     }
                 }
             }
