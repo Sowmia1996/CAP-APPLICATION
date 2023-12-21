@@ -8,10 +8,10 @@ import com.sap.cds.services.persistence.PersistenceService;
 
 import cds.gen.bookscatalog.BooksCatalog_;
 import cds.gen.bookscatalog.CreateOrderContext;
-import cds.gen.bookscatalog.CreateCancelOrderReq;
-import cds.gen.bookscatalog.CreateCancelOrderRet;
-import cds.gen.bookscatalog.Orders_;
-import cds.gen.bookscatalog.Orders;
+import cds.gen.sap.capire.customtypes.CreateCancelOrderReq;
+import cds.gen.sap.capire.customtypes.CreateCancelOrderRet;
+import cds.gen.manageorders.Orders_;
+import cds.gen.manageorders.Orders;
 
 import java.util.*;
 
@@ -34,7 +34,8 @@ public class BooksCatalogHandler implements EventHandler {
     @On(event = CreateOrderContext.CDS_NAME)
     public void createOrder (CreateOrderContext context) {
         System.out.println("Hi there! custom action is triggered!!");
-        Integer orderId = 117;
+        Random rand = new Random();
+        Integer orderId = rand.nextInt(1000);
 
         List<Map<String, Integer>> orderItems = new ArrayList<>();
         // for each item in the context, fill up the above list
