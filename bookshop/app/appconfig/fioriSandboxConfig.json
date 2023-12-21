@@ -1,0 +1,13 @@
+{
+    "defaultRenderer": "fiori2",
+    "applications": {
+      "browse-books": {
+        "title": "Browse Books",
+        "description": "Shop For Books",
+        "additionalInformation": "SAPUI5.Component=browseBooks",
+        "applicationType": "URL",
+        "url": "/browse/webapp",
+        "navigationMode": "embedded"
+      }
+    }
+  }

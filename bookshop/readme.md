@@ -1,0 +1,1 @@
+This is a repository to try out a sample bookshop application using CAP-Java Runtime.

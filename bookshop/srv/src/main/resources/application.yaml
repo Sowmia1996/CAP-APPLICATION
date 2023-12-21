@@ -1,0 +1,9 @@
+---
+spring:
+  web.resources.static-locations: "file:./app"
+  sql.init.schema-locations: classpath:schema-h2.sql
+cds:
+  odata-v4:
+    endpoint.path: "/api"
+    lazy-i18n.enabled: true
+    datasource.auto-config.enabled: false

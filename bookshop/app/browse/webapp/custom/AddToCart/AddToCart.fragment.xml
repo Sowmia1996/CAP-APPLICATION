@@ -1,0 +1,12 @@
+<core:FragmentDefinition
+    xmlns:core="sap.ui.core"
+    xmlns="sap.m"
+    xmlns:l="sap.ui.layout">
+    <l:VerticalLayout core:require="{handler: 'browseBooks/custom/AddToCart/AddToCartHandler'}">
+    <StepInput
+        min="0"
+        max="1000"
+        description="units"
+        change="handler.onChange"/>
+    </l:VerticalLayout>
+</core:FragmentDefinition>
