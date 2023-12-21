@@ -3,10 +3,12 @@
     xmlns="sap.m"
     xmlns:l="sap.ui.layout">
     <l:VerticalLayout core:require="{handler: 'browseBooks/custom/AddToCart/AddToCartHandler'}">
-    <StepInput
+    <!-- <StepInput
         min="0"
         max="1000"
         description="units"
-        change="handler.onChange"/>
+        change="handler.onChange"/> -->
+    <Button text="Add Review"
+    press="handler.onPress"></Button>
     </l:VerticalLayout>
 </core:FragmentDefinition>

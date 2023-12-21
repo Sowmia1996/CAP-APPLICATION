@@ -57,8 +57,20 @@
             "@com.sap.vocabularies.UI.v1.LineItem": {
                 "columns": {
                     "AddToCartColumn": {
-                        "header": "Add To Cart",
+                        "header": "Add Reviews",
                         "template": "browseBooks.custom.AddToCart.AddToCart"
+                    }
+                }
+            }
+          },
+          "content": {
+            "header": {
+                "actions": {
+                    "createOrder": {
+                        "press": "browseBooks.custom.AddToCart.AddToCartHandler.createOrder",
+                        "visible": true,
+                        "enabled": true,
+                        "text": "Go To Cart"                                         
                     }
                 }
             }

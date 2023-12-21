@@ -1,8 +1,6 @@
 using BooksCatalog from '../../srv/catalog-service';
 
 annotate BooksCatalog.Books with @(UI : {
-  DeleteHidden : true,
-  CreateHidden : true,
   HeaderInfo  : {
       TypeName : 'Book',
       TypeNamePlural : 'Books',
