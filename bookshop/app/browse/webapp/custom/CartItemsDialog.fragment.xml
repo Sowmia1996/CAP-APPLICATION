@@ -1,0 +1,64 @@
+<core:FragmentDefinition
+    xmlns:core="sap.ui.core"
+    xmlns="sap.m"
+    xmlns:l="sap.ui.layout">
+    <Dialog 
+        contentHeight="auto"
+		contentWidth="50rem"
+        title="Edit Cart Items"
+        core:require="{handler: 'browseBooks/custom/CustomHandler'}">
+        <Label text="Book Title"
+            class="sapUiLargeMarginBeginEnd sapUiSmallMarginTop"
+            design="Bold"
+            width="13.5rem"/>
+        <Label text="Quantity"
+            class="sapUiMediumMarginEnd sapUiSmallMarginTop"
+            design="Bold"
+            width="10rem"/>
+        <Label text="Book Format"
+            class="sapUiMediumMarginEnd sapUiSmallMarginTop"
+            design="Bold"/>
+        <List id="cartItems"
+            class="sapUiMediumMarginBeginEnd sapUiSmallMarginBottom">
+            <items>
+                <CustomListItem>
+                    <HBox class="sapUiSmallMarginTopBottom">
+                        <Text text="{mine>title}"
+                            class="sapUiSmallMarginTop sapUiSmallMarginEnd"
+                            width="15rem"/>
+                        <StepInput id="quantityInput"
+                            change="handler.onChange"
+                            value="1"
+                            class="sapUiSmallMarginEnd"
+                            width="8rem"/>
+                        <Select class="sapUiSmallMarginBegin"
+                            id="formatSelect"
+                            width="13rem"/>
+                    </HBox>
+                </CustomListItem>
+            </items>
+        </List>
+        <Label text="Shipping Address"
+            class="sapUiMediumMarginBegin"
+            design="Bold"/>
+        <TextArea id="AddressTextInput"
+            class="sapUiMediumMarginBeginEnd sapUiSmallMarginTopBottom"
+            placeholder="Enter The Shipping Address"
+            maxLength="250"
+            rows="3"
+            width="40rem"
+            value=""/>
+        <buttons>
+            <Button 
+                id="createOrderBtn"
+                text="Create Order"
+                type="Emphasized"
+                press="handler.submit"
+                />
+            <Button 
+                id="cancelBtn"
+                text="Cancel"
+                press="handler.cancel"/>
+        </buttons>
+    </Dialog>
+</core:FragmentDefinition>
