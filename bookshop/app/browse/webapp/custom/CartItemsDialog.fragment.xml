@@ -3,8 +3,6 @@
     xmlns="sap.m"
     xmlns:l="sap.ui.layout">
     <Dialog 
-        contentHeight="auto"
-		contentWidth="50rem"
         title="Edit Cart Items"
         core:require="{handler: 'browseBooks/custom/CustomHandler'}">
         <Label text="Book Title"
@@ -38,16 +36,18 @@
                 </CustomListItem>
             </items>
         </List>
-        <Label text="Shipping Address"
-            class="sapUiMediumMarginBegin"
-            design="Bold"/>
-        <TextArea id="AddressTextInput"
-            class="sapUiMediumMarginBeginEnd sapUiSmallMarginTopBottom"
-            placeholder="Enter The Shipping Address"
-            maxLength="250"
-            rows="3"
-            width="40rem"
-            value=""/>
+        <VBox >
+            <Label text="Shipping Address"
+                class="sapUiMediumMarginBegin"
+                design="Bold"/>
+            <TextArea id="AddressTextInput"
+                class="sapUiMediumMarginBeginEnd sapUiSmallMarginTopBottom"
+                placeholder="Enter The Shipping Address"
+                maxLength="250"
+                rows="3"
+                width="40rem"
+                value=""/>
+        </VBox>
         <buttons>
             <Button 
                 id="createOrderBtn"
