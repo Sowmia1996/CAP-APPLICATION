@@ -46,4 +46,5 @@ entity OrderItems {
   order: Association to Orders on order.ID = order_ID;
   item: Association to  Books on item.ID = item_ID;
   quantity : Integer;
+  format: String(111);
 }

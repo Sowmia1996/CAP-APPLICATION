@@ -3,12 +3,7 @@
     xmlns="sap.m"
     xmlns:l="sap.ui.layout">
     <l:VerticalLayout core:require="{handler: 'browseBooks/custom/CustomHandler'}">
-    <!-- <StepInput
-        min="0"
-        max="1000"
-        description="units"
-        change="handler.onChange"/> -->
     <Button text="Add Review"
-    press="handler.onPress"></Button>
+    press="handler.onAddReviewPress"></Button>
     </l:VerticalLayout>
 </core:FragmentDefinition>

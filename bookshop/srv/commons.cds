@@ -7,4 +7,5 @@ type createCancelOrderRet {
 type createCancelOrderReq {
     bookId: Integer;
     quantity: Integer;
+    format: String;
 }

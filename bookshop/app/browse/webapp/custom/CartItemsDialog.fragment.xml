@@ -3,7 +3,7 @@
     xmlns="sap.m"
     xmlns:l="sap.ui.layout">
     <Dialog 
-        title="Edit Cart Items"
+        title="Review And Place Order"
         core:require="{handler: 'browseBooks/custom/CustomHandler'}">
         <Label text="Book Title"
             class="sapUiLargeMarginBeginEnd sapUiSmallMarginTop"
@@ -25,13 +25,19 @@
                             class="sapUiSmallMarginTop sapUiSmallMarginEnd"
                             width="15rem"/>
                         <StepInput id="quantityInput"
-                            change="handler.onChange"
+                            change="handler.onChangeQuantity"
                             value="1"
                             class="sapUiSmallMarginEnd"
                             width="8rem"/>
                         <Select class="sapUiSmallMarginBegin"
                             id="formatSelect"
-                            width="13rem"/>
+                            change="handler.onChangeFormat"
+                            width="13rem"
+                            selectedKey="pb"
+                            items="{path: 'bookFormatCode>/formats', templateShareable: false}">
+                            <core:Item key="{bookFormatCode>type}"
+                                text="{bookFormatCode>text}" />
+                        </Select>
                     </HBox>
                 </CustomListItem>
             </items>

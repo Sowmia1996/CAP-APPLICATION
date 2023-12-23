@@ -1,12 +1,17 @@
-sap.ui.define(["sap/m/MessageBox", "sap/ui/core/Fragment", "sap/ui/model/Filter"], function (MessageBox, Fragment, Filter) {
+sap.ui.define(["sap/m/MessageBox", "sap/ui/core/Fragment", "sap/ui/model/Filter", "sap/ui/model/json/JSONModel"], function (MessageBox, Fragment, Filter, JSONModel) {
     "use strict";
 
     return {
-        onChange: function (oEvent) {
-            
-            // Try to store the quantity information in the odata model itself like below
-            // oEvent.getSource().getBindingContext().setproperty() --> Note that odata can only be accessed using: sap.ui.model.odata.v4.Context
-            // Then later you can access this in the createorder function for each book that is selected
+        onChangeQuantity: function (oEvent) {
+            const sBookId = oEvent.getSource().getParent().getParent().getBindingContext('mine').getProperty('ID');
+            const iQuantity = oEvent.getParameters().value;
+            this.getModel('bookFormatCode').getData().payload.items.find(oItem => oItem.bookId === sBookId).quantity = iQuantity;
+        },
+
+        onChangeFormat: function (oEvent) {
+            const sBookId = oEvent.getSource().getParent().getParent().getBindingContext('mine').getProperty('ID');
+            const sFormat = oEvent.getParameters().selectedItem.getText();
+            this.getModel('bookFormatCode').getData().payload.items.find(oItem => oItem.bookId === sBookId).format = sFormat;
         },
 
         createOrder: async function() {
@@ -19,6 +24,31 @@ sap.ui.define(["sap/m/MessageBox", "sap/ui/core/Fragment", "sap/ui/model/Filter"
                 });
                 oBooksListPage.addDependent(this.oCartItemsDialog)
                 this.oCartItemsDialog.setModel(this.getModel(), 'mine')
+                const oModel = new JSONModel({
+                    formats: [
+                        {
+                            type: 'pb',
+                            text: 'Paper Back'
+                        },
+                        {
+                            type: 'hc',
+                            text: 'Hard Cover'
+                        },
+                        {
+                            type: 'audio',
+                            text: 'AudiBook'
+                        },
+                        {
+                            type: 'kv',
+                            text: 'Kindle Version'
+                        },
+                        {
+                            type: 'sc',
+                            text: 'Soft Cover'
+                        }
+                    ]
+                  })
+                  this.oCartItemsDialog.setModel(oModel, 'bookFormatCode')
             }
 
             this.oCartItemsDialog.attachBeforeOpen(() => {
@@ -32,42 +62,40 @@ sap.ui.define(["sap/m/MessageBox", "sap/ui/core/Fragment", "sap/ui/model/Filter"
                     template: oList.removeItem(0),
                     filters: new Filter({filters: aListFilter, and: false})
                 });
+                const oCreateOrderPayload = {
+                    items: [],
+                    address: ""
+                }
+                aSelectedBooksId.forEach(sId => oCreateOrderPayload.items.push({bookId: sId, quantity: 1, format: "Paper Back"}))
+                this.oCartItemsDialog.getModel('bookFormatCode').setProperty('/payload', oCreateOrderPayload)
             });
 
             this.oCartItemsDialog.open();
-
-            // ----------------------To be moved to a different handler ------------------------------------//
-            // const aSelectedBooksContext = this.getSelectedContexts()
-            // const aPayloadItems = aSelectedBooksContext.map(oBook=> {
-            //     return {
-            //         bookId: oBook.getProperty('ID'),
-            //         quantity: 2
-            //     }
-            // })
-            // // Call the unbound action with these payloads
-            // const oModel = this.getModel();
-            // const oActionODataContextBinding = oModel.bindContext("/createOrder(...)");
-            // oActionODataContextBinding.setParameter("items", aPayloadItems);
-            // oActionODataContextBinding.setParameter("address", "Hard-Coded Address For testing");
-            // oActionODataContextBinding.execute().then(
-            //     function() {
-            //         const oActionContext = oActionODataContextBinding.getBoundContext();
-            //         console.table(oActionContext.getObject().value);
-            //     }.bind(this)
-            // );
         },
 
         submit: function (oEvent) {
+            oEvent.getSource().getParent().setBusy(true);
+            const sAddress = sap.ui.getCore().byId('browseBooks::BooksList-CartItemsDialog--AddressTextInput').getValue();
+            const oPayload = this.getModel('bookFormatCode').getData().payload;
+            oPayload.address = sAddress;
+            // Call the unbound action with thespayload
+            const oModel = this.getModel();
+            const oActionODataContextBinding = oModel.bindContext("/createOrder(...)");
+            oActionODataContextBinding.setParameter("items", oPayload.items);
+            oActionODataContextBinding.setParameter("address", oPayload.address);
+            oActionODataContextBinding.execute().then(()=> {});
+            oEvent.getSource().getParent().setBusy(false);
             oEvent.getSource().getParent().close();
+            //Show a message box with the orderId information
+            //IF failed, show a messagebox with exact failure reason
         },
 
         cancel: function (oEvent) {
             oEvent.getSource().getParent().close();
         },
 
-        onPress: function (oEvent) {
+        onAddReviewPress: function (oEvent) {
             MessageBox.show("Hi, this isn't implemented yet!");
-            //const sBookId = oEvent.getSource().getParent().getParent().getBindingContext().getProperty('ID')
         }
     };
 });
