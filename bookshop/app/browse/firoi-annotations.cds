@@ -6,10 +6,6 @@ annotate BooksCatalog.Books with @(UI : {
       TypeNamePlural : 'Books',
   },
   LineItem : [
-    {
-      Value: isbn,
-      ![@HTML5.CssDefaults] : {width: '10rem'}
-    },
     { 
       Value: title,
       ![@HTML5.CssDefaults] : {width: '15rem'}
