@@ -74,14 +74,31 @@ public class BooksCatalogHandler implements EventHandler {
         myOrder.setTotal(cartTotal);
         
         // Now insert this into the orders table
-        db.run(Insert.into(Orders_.CDS_NAME).entry(myOrder));
+        if (orderItems.size() > 0) {
+            db.run(Insert.into(Orders_.CDS_NAME).entry(myOrder));
+        }
 
-        // Update the stock after taking into account the current order
-        
+        // Update the stock for each ordered Book
+        for (Map<String, Object> item: orderItems) {
+            Integer currentStock = (Integer) db.run(Select.from(Books_.CDS_NAME).columns("stock").where(b -> b.get("ID").eq(item.get("item_ID")))).first().get().get("stock");
+            db.run(Update.entity(Books_.CDS_NAME).byId(item.get("item_ID")).data("stock", currentStock - (Integer)item.get("quantity")));
+        }
 
+        // Send the appropriate response
+        String responseMsg, acknowledgeMsg;
+        if (orderItems.size() == 0) {
+            responseMsg = "Failed";
+            acknowledgeMsg = "Your Order failed";
+        } else if (orderItems.size() < context.getItems().size()) {
+            responseMsg = "Partially Ordered";
+            acknowledgeMsg = "Your order has been partially palced as few items are out of stock. Your order ID is:" + orderNo;
+        } else {
+            responseMsg = "Successful";
+            acknowledgeMsg = "Your Order has been placed successfully. Your order ID is: " + orderNo;
+        }
         CreateCancelOrderRet response = CreateCancelOrderRet.create();
-        response.setMessage("Order Placed"); // Other two types are partially ordered and Order Failed
-        response.setAcknowledge("Your request has been submitted successfully. Your order ID is: " + orderNo);
+        response.setMessage(responseMsg);
+        response.setAcknowledge(acknowledgeMsg);
         
         context.setResult(response);
     }
