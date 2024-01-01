@@ -22,6 +22,7 @@ sap.ui.define(["sap/m/MessageBox", "sap/ui/core/Fragment", "sap/ui/model/Filter"
                     id: this.oCartItemsDialogId,
                     name: "browseBooks.custom.CartItemsDialog"
                 });
+                this.oTemplate = Fragment.byId(this.oCartItemsDialogId, "cartItems").removeItem(0);
                 oBooksListPage.addDependent(this.oCartItemsDialog)
                 this.oCartItemsDialog.setModel(this.getModel(), 'mine')
                 const oModel = new JSONModel({
@@ -59,7 +60,7 @@ sap.ui.define(["sap/m/MessageBox", "sap/ui/core/Fragment", "sap/ui/model/Filter"
                 oList.bindAggregation('items', {
                     path: 'mine>/Books', 
                     model: 'mine', 
-                    template: oList.removeItem(0),
+                    template: this.oTemplate,
                     filters: new Filter({filters: aListFilter, and: false})
                 });
                 const oCreateOrderPayload = {
