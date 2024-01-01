@@ -49,7 +49,7 @@ public class BooksCatalogHandler implements EventHandler {
         Optional<Row> book;
         Map<String, Object> tempMap;
         for(CreateCancelOrderReq item : context.getItems()) {
-            Integer bookId = item.getBookId();
+            String bookId = item.getBookId();
             Result res =  db.run(Select.from(Books_.CDS_NAME).columns("stock", "price").where(b -> b.get("ID").eq(bookId)));
             book = res.first();
             price = book.get().get("price");

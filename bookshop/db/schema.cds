@@ -10,7 +10,7 @@ type Status : String enum {
 }
 
 entity Books {
-  key ID : Integer;
+  key ID : String;
   title  : String(111);
   descr  : String(1111);
   stock  : Integer;
@@ -25,7 +25,7 @@ entity Books {
 }
 
 entity Authors {
-  key ID : Integer;
+  key ID : String;
   name   : String(111);
   about : String(1111);
   books  : Association to many Books on books.author_ID = ID;

@@ -1,10 +1,26 @@
 using BooksCatalog from '../../srv/catalog-service';
 
+// List report and Object Page annotations
 annotate BooksCatalog.Books with @(UI : {
   HeaderInfo  : {
       TypeName : 'Book',
       TypeNamePlural : 'Books',
+      Title: {Value: title},
+      Description: {Value: author.name}
   },
+  Identification : [
+      {Value : title}
+  ],
+  HeaderFacets : [
+    {
+        $Type : 'UI.ReferenceFacet',
+        Target : '@UI.DataPoint#rating'
+    },
+    {
+        $Type : 'UI.ReferenceFacet',
+        Target : '@UI.DataPoint#price'
+    }
+  ],
   LineItem : [
     { 
       Value: title,
@@ -42,6 +58,10 @@ annotate BooksCatalog.Books with @(UI : {
     MinimumValue : 0,
     MaximumValue : 5
   },
+  DataPoint #price : {
+    Value : price,
+    Title : 'Price'
+  }
 }){ ID  @UI.Hidden;
     author_ID @UI.Hidden;
     currency @UI.Hidden;

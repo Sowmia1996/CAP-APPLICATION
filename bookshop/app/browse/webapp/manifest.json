@@ -43,6 +43,16 @@
         "pattern": ":?query:",
         "name": "BooksList",
         "target": "BooksList"
+       },
+       {
+           "pattern": "Books({key}):?query:",
+           "name": "BookDetails",
+           "target": "BookDetails"
+       },
+       {
+           "pattern": "Books({key}/author({key2}):?query:",
+           "name": "AuthorDetails",
+           "target": "AuthorDetails"
        }
       ],
       "targets": {
@@ -53,6 +63,13 @@
         "options": {
          "settings": {
           "entitySet": "Books",
+          "navigation" : {
+            "Books" : {
+                "detail" : {
+                    "route" : "BookDetails"
+                }
+            }
+          },
           "controlConfiguration": {
             "@com.sap.vocabularies.UI.v1.LineItem": {
                 "columns": {
@@ -77,7 +94,34 @@
           }
          }
         }
-       }
+       },
+       "BookDetails":{
+        "type": "Component",
+        "id": "BookDetails",
+        "name": "sap.fe.templates.ObjectPage",
+        "options": {
+            "settings": {
+                "entitySet": "Books",
+                "navigation" : {
+                    "Authors" : {
+                        "detail" : {
+                            "route" : "AuthorDetails"
+                        }
+                    }
+                }
+            }
+        }
+       },
+       "AuthorDetails": {
+            "type": "Component",
+            "id": "AuthorDetails",
+            "name": "sap.fe.templates.ObjectPage",
+            "options": {
+                "settings" : {
+                    "entitySet" : "Authors"
+                }
+            }
+        }
       }
      }
     },
