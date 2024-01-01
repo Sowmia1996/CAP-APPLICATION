@@ -7,4 +7,5 @@ service ManageOrders {
     actions {
         action cancelOrder (orderID: Integer) returns ct.createCancelOrderRet;
     };
+    entity Books as projection on bs.Books;
 }

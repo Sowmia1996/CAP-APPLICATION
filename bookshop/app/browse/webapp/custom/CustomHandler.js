@@ -75,7 +75,6 @@ sap.ui.define(["sap/m/MessageBox", "sap/ui/core/Fragment", "sap/ui/model/Filter"
         },
 
         submit: async function (oEvent) {
-            oEvent.getSource().getParent().setBusy(true);
             const sAddress = sap.ui.getCore().byId('browseBooks::BooksList-CartItemsDialog--AddressTextInput').getValue();
             const oPayload = this.getModel('bookFormatCode').getData().payload;
             oPayload.address = sAddress;
@@ -93,8 +92,8 @@ sap.ui.define(["sap/m/MessageBox", "sap/ui/core/Fragment", "sap/ui/model/Filter"
                     title: message
                 }
             );
-            oEvent.getSource().getParent().setBusy(false);
             oEvent.getSource().getParent().close();
+            oEvent.getSource().getParent().getParent().getModel().refresh();
         },
 
         cancel: function (oEvent) {
