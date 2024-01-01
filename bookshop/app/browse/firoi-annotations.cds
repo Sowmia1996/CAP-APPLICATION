@@ -21,6 +21,18 @@ annotate BooksCatalog.Books with @(UI : {
         Target : '@UI.DataPoint#price'
     }
   ],
+  Facets : [
+    {
+        $Type : 'UI.ReferenceFacet',
+        Label : 'General',
+        Target : '@UI.FieldGroup#General'
+    },
+    {
+        $Type : 'UI.ReferenceFacet',
+        Label : 'Description',
+        Target : '@UI.FieldGroup#Descr'
+    }
+  ],
   LineItem : [
     { 
       Value: title,
@@ -61,7 +73,12 @@ annotate BooksCatalog.Books with @(UI : {
   DataPoint #price : {
     Value : price,
     Title : 'Price'
-  }
+  },
+  FieldGroup #General : {Data : [
+        {Value : title},
+        {Value : genre}
+    ]},
+    FieldGroup #Descr : {Data : [{Value : descr}]}
 }){ ID  @UI.Hidden;
     author_ID @UI.Hidden;
     currency @UI.Hidden;
