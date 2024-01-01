@@ -45,17 +45,16 @@ public class BooksCatalogHandler implements EventHandler {
         List<Map<String, Object>> orderItems = new ArrayList<>();
         BigDecimal cartTotal = BigDecimal.ZERO;
         Integer reqQuantity;
-        Object stock, price, title;
+        Object stock, price;
         Optional<Row> book;
         Map<String, Object> tempMap;
         for(CreateCancelOrderReq item : context.getItems()) {
             Integer bookId = item.getBookId();
-            Result res =  db.run(Select.from(Books_.CDS_NAME).columns("stock", "price", "title").where(b -> b.get("ID").eq(bookId)));
+            Result res =  db.run(Select.from(Books_.CDS_NAME).columns("stock", "price").where(b -> b.get("ID").eq(bookId)));
             book = res.first();
             price = book.get().get("price");
             reqQuantity = item.getQuantity();
             stock = book.get().get("stock");
-            title = book.get().get("title");
             if ((Integer)stock >= reqQuantity) {
                 tempMap  = new HashMap<String, Object>();
                 tempMap.put("order_ID", orderId);
@@ -88,7 +87,7 @@ public class BooksCatalogHandler implements EventHandler {
         String responseMsg, acknowledgeMsg;
         if (orderItems.size() == 0) {
             responseMsg = "Failed";
-            acknowledgeMsg = "Your Order failed";
+            acknowledgeMsg = "Your Order failed as all items are out of stock currently";
         } else if (orderItems.size() < context.getItems().size()) {
             responseMsg = "Partially Ordered";
             acknowledgeMsg = "Your order has been partially palced as few items are out of stock. Your order ID is:" + orderNo;
