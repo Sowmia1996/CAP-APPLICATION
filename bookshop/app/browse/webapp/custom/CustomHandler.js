@@ -73,21 +73,27 @@ sap.ui.define(["sap/m/MessageBox", "sap/ui/core/Fragment", "sap/ui/model/Filter"
             this.oCartItemsDialog.open();
         },
 
-        submit: function (oEvent) {
+        submit: async function (oEvent) {
             oEvent.getSource().getParent().setBusy(true);
             const sAddress = sap.ui.getCore().byId('browseBooks::BooksList-CartItemsDialog--AddressTextInput').getValue();
             const oPayload = this.getModel('bookFormatCode').getData().payload;
             oPayload.address = sAddress;
-            // Call the unbound action with thespayload
+            // Call the unbound action with the payload
             const oModel = this.getModel();
             const oActionODataContextBinding = oModel.bindContext("/createOrder(...)");
             oActionODataContextBinding.setParameter("items", oPayload.items);
             oActionODataContextBinding.setParameter("address", oPayload.address);
-            oActionODataContextBinding.execute().then(()=> {});
+            await oActionODataContextBinding.execute();
+            const {acknowledge, message} = oActionODataContextBinding.getBoundContext().getObject();
+            const icon = (message === "Order Successful") ? MessageBox.Icon.SUCCESS : (message === "Partially Ordered") ? MessageBox.Icon.INFORMATION : MessageBox.Icon.ERROR;
+            MessageBox.show(
+                acknowledge, {
+                    icon: icon,
+                    title: message
+                }
+            );
             oEvent.getSource().getParent().setBusy(false);
             oEvent.getSource().getParent().close();
-            //Show a message box with the orderId information
-            //IF failed, show a messagebox with exact failure reason
         },
 
         cancel: function (oEvent) {

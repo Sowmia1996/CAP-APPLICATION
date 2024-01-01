@@ -86,13 +86,13 @@ public class BooksCatalogHandler implements EventHandler {
         // Send the appropriate response
         String responseMsg, acknowledgeMsg;
         if (orderItems.size() == 0) {
-            responseMsg = "Failed";
+            responseMsg = "Order Creation Failed";
             acknowledgeMsg = "Your Order failed as all items are out of stock currently";
         } else if (orderItems.size() < context.getItems().size()) {
             responseMsg = "Partially Ordered";
             acknowledgeMsg = "Your order has been partially palced as few items are out of stock. Your order ID is:" + orderNo;
         } else {
-            responseMsg = "Successful";
+            responseMsg = "Order Successful";
             acknowledgeMsg = "Your Order has been placed successfully. Your order ID is: " + orderNo;
         }
         CreateCancelOrderRet response = CreateCancelOrderRet.create();
