@@ -37,6 +37,7 @@ entity Orders {
   status : Status;
   total : Decimal(10,2);
   shippingAddress : String(1111);
+  currency: Currency;
   orderItems : Composition of  many OrderItems on orderItems.order_ID = ID;
 }
 

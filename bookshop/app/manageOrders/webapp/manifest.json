@@ -1,0 +1,98 @@
+{
+    "_version": "1.8.0",
+    "sap.app": {
+     "id": "manageOrders",
+     "type": "application",
+     "title": "Manage Orders",
+     "description": "Cancel/Edit Orders",
+     "dataSources": {
+      "ManageOrders": {
+       "uri": "/api/orders/",
+       "type": "OData",
+       "settings": {
+        "odataVersion": "4.0"
+       }
+      }
+     }
+    },
+    "sap.ui5": {
+     "dependencies": {
+      "libs": {
+       "sap.fe.templates": {}
+      }
+     },
+     "models": {
+      "": {
+       "dataSource": "ManageOrders",
+       "settings": {
+        "synchronizationMode": "None",
+        "operationMode": "Server",
+        "autoExpandSelect": true,
+        "earlyRequests": true,
+        "groupProperties": {
+         "default": {
+          "submit": "Auto"
+         }
+        }
+       }
+      }
+     },
+     "routing": {
+      "routes": [
+       {
+        "pattern": ":?query:",
+        "name": "OrdersList",
+        "target": "OrdersList"
+       },
+       {
+           "pattern": "Orders({key}):?query:",
+           "name": "OrderDetails",
+           "target": "OrderDetails"
+       }
+      ],
+      "targets": {
+       "OrdersList": {
+        "type": "Component",
+        "id": "OrdersList",
+        "name": "sap.fe.templates.ListReport",
+        "options": {
+         "settings": {
+          "entitySet": "Orders",
+          "navigation" : {
+            "Orders" : {
+                "detail" : {
+                    "route" : "OrderDetails"
+                }
+            }
+          },
+          "controlConfiguration": {
+            "@com.sap.vocabularies.UI.v1.LineItem": {
+                "columns": {
+                    "CancelOrderColumn": {
+                        "header": "Cancel Order",
+                        "template": "manageOrders.custom.CancelOrderButton"
+                    }
+                }
+            }
+          }
+         }
+        }
+       },
+       "OrderDetails":{
+        "type": "Component",
+        "id": "OrderDetails",
+        "name": "sap.fe.templates.ObjectPage",
+        "options": {
+            "settings": {
+                "entitySet": "Orders"
+            }
+        }
+       }
+      }
+     }
+    },
+    "sap.ui": {
+     "technology": "UI5",
+     "fullWidth": false
+    }
+}

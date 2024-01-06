@@ -1,2 +1,2 @@
-ID,orderNumber,status,total,shippingAddress
-1,1234,Shipped,1000,NO 10/18 ABCD street
+ID,orderNumber,status,total,shippingAddress,currency_code
+1,1234,Delivered,1000,NO 10/18 ABCD street,EUR

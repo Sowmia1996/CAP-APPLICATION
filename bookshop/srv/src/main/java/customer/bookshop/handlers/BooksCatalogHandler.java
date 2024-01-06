@@ -71,6 +71,7 @@ public class BooksCatalogHandler implements EventHandler {
         myOrder.setShippingAddress(context.getAddress());
         myOrder.setOrderItems(orderItems);
         myOrder.setTotal(cartTotal);
+        myOrder.setCurrencyCode("EUR");
         
         // Now insert this into the orders table
         if (orderItems.size() > 0) {

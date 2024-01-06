@@ -1,0 +1,12 @@
+<core:FragmentDefinition
+    xmlns:core="sap.ui.core"
+    xmlns="sap.m"
+    xmlns:l="sap.ui.layout">
+    <l:VerticalLayout core:require="{handler: 'manageOrders/custom/CustomHandler'}">
+        <Button 
+            text="Cancel Order"
+            press="handler.onCancelOrderPress"
+            enabled="{= %{status} !== 'Delivered'}">
+        </Button>
+    </l:VerticalLayout>
+</core:FragmentDefinition>

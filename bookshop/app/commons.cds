@@ -14,3 +14,11 @@ annotate  bs.Authors with {
   name @title: 'Author';
   about @title: 'About Author';
 }
+
+annotate bs.Orders with {
+  orderNumber @title: 'Order Number';
+  status @title: 'Status';
+  total @title: 'Order Total';
+  shippingAddress @title: 'Deliver To:';
+};
+

@@ -8,6 +8,14 @@
         "applicationType": "URL",
         "url": "/browse/webapp",
         "navigationMode": "embedded"
+      },
+      "manage-orders": {
+        "title": "Manage Orders",
+        "description": "Cancel/Edit Orders",
+        "additionalInformation": "SAPUI5.Component=manageOrders",
+        "applicationType": "URL",
+        "url": "/manageOrders/webapp",
+        "navigationMode": "embedded"
       }
     }
   }
