@@ -21,6 +21,18 @@ annotate ManageOrders.Orders with @(UI : {
         Target : '@UI.DataPoint#status'
     }
   ],
+  Facets : [
+    {
+        $Type : 'UI.ReferenceFacet',
+        Label : 'Shipping Address',
+        Target : '@UI.FieldGroup#shippingAddress'
+    },
+    {
+        $Type : 'UI.ReferenceFacet',
+        Label : 'Order Items',
+        Target : '@UI.FieldGroup#items'
+    }
+  ],
   LineItem : [
     { 
       Value: orderNumber,
@@ -50,7 +62,13 @@ annotate ManageOrders.Orders with @(UI : {
   DataPoint #orderNo : {
     Value : orderNumber,
     Title : 'Order Number'
-  }
+  },
+  FieldGroup #shippingAddress:  {Data : [
+    {Value : shippingAddress}
+  ]},
+  FieldGroup #items:  {Data : [
+    {Value : orderItems.item.title}
+  ]}
 }){ ID  @UI.Hidden;
 currency @UI.Hidden;
 @Measures.ISOCurrency : currency.symbol

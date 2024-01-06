@@ -1,0 +1,49 @@
+<core:FragmentDefinition
+    xmlns:core="sap.ui.core"
+    xmlns="sap.m"
+    xmlns:l="sap.ui.layout">
+    <Dialog 
+        title="Confirm Order Cancellation"
+        core:require="{handler: 'manageOrders/custom/CustomHandler'}">
+        <Title text="Order Items"
+            class="sapUiSmallMargin"/>
+        <List id="orderItemsList"
+            class="sapUiMediumMarginBeginEnd sapUiSmallMarginBottom">
+            <items>
+                <CustomListItem>
+                    <HBox class="sapUiTinyMargin">
+                        <Label text="{item/title}"/>
+                    </HBox>
+                </CustomListItem>
+            </items>
+        </List>
+        <VBox class="sapUiSmallMargin">
+            <Title text="Order Status"/>
+            <Text id="statusField"
+                class="sapUiTinyMargin"
+                text="{status}"/>
+        </VBox>
+        <VBox class="sapUiSmallMargin">
+            <Title text="Order Total"/>
+            <HBox class="sapUiTinyMargin">
+                <Text id="total"
+                    text="{total}"
+                    class="sapUiTinyMarginEnd"/>
+                <Text id="currency"
+                    text="{currency/code}"/>
+            </HBox>
+        </VBox>
+        <buttons>
+            <Button 
+                id="cancelOrderBtn"
+                text="Confirm"
+                type="Emphasized"
+                press="handler.submit"
+                />
+            <Button 
+                id="cancelBtn"
+                text="Cancel"
+                press="handler.cancel"/>
+        </buttons>
+    </Dialog>
+</core:FragmentDefinition>
