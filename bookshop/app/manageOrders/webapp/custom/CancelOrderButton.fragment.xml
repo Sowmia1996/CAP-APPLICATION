@@ -6,7 +6,7 @@
         <Button 
             text="Cancel Order"
             press="handler.onCancelOrderPress"
-            enabled="{= %{status} !== 'Delivered'}">
+            enabled="{= (%{status} !== 'Delivered') &amp;&amp; (%{status} !== 'Cancelled')}">
         </Button>
     </l:VerticalLayout>
 </core:FragmentDefinition>

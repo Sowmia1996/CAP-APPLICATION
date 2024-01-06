@@ -6,7 +6,7 @@ type Genre : String enum {
 }
 
 type Status : String enum {
-  AwaitingConfirmation; OrderConfirmed; Packed; Shipped; InTransit; Delivered;
+  AwaitingConfirmation; OrderConfirmed; Delivered; Cancelled;
 }
 
 entity Books {

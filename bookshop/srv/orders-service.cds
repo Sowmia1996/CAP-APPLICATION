@@ -5,7 +5,7 @@ using sap.capire.customTypes as ct from './commons';
 service ManageOrders {
     entity Orders as projection on bs.Orders
     actions {
-        action cancelOrder (orderID: Integer) returns ct.createCancelOrderRet;
+        action cancelOrder () returns ct.createCancelOrderRet;
     };
     entity Books as projection on bs.Books;
 }
