@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 import com.sap.cds.services.handler.EventHandler;
 import com.sap.cds.services.handler.annotations.ServiceName;
 import com.sap.cds.services.handler.annotations.On;
+import com.sap.cds.services.handler.annotations.After;
 import com.sap.cds.services.persistence.PersistenceService;
 
 import cds.gen.bookscatalog.BooksCatalog_;
@@ -37,7 +38,7 @@ public class BooksCatalogHandler implements EventHandler {
     }
 
     @On(event = CreateOrderContext.CDS_NAME)
-    public void createOrder (CreateOrderContext context) {
+    public void onCreateOrder (CreateOrderContext context) {
         System.out.println("Hi there! custom action is triggered!!");
         Random rand = new Random();
         Integer orderId = rand.nextInt(1000);
@@ -78,11 +79,7 @@ public class BooksCatalogHandler implements EventHandler {
             db.run(Insert.into(Orders_.CDS_NAME).entry(myOrder));
         }
 
-        // Update the stock for each ordered Book
-        for (Map<String, Object> item: orderItems) {
-            Integer currentStock = (Integer) db.run(Select.from(Books_.CDS_NAME).columns("stock").where(b -> b.get("ID").eq(item.get("item_ID")))).first().get().get("stock");
-            db.run(Update.entity(Books_.CDS_NAME).byId(item.get("item_ID")).data("stock", currentStock - (Integer)item.get("quantity")));
-        }
+        context.put("orderItems", orderItems);
 
         // Send the appropriate response
         String responseMsg, acknowledgeMsg;
@@ -101,5 +98,15 @@ public class BooksCatalogHandler implements EventHandler {
         response.setAcknowledge(acknowledgeMsg);
         
         context.setResult(response);
+    }
+
+    // Update the stock for each ordered Book
+    @After(event = CreateOrderContext.CDS_NAME)
+    public void afterCreateOrder (CreateOrderContext context) {
+        List<Map<String, Object>> orderItems = (List<Map<String, Object>>) context.get("orderItems");
+        for (Map<String, Object> item: orderItems) {
+            Integer currentStock = (Integer) db.run(Select.from(Books_.CDS_NAME).columns("stock").where(b -> b.get("ID").eq(item.get("item_ID")))).first().get().get("stock");
+            db.run(Update.entity(Books_.CDS_NAME).byId(item.get("item_ID")).data("stock", currentStock - (Integer)item.get("quantity")));
+        }
     }
 }
