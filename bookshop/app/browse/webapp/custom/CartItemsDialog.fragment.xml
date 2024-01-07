@@ -24,13 +24,12 @@
                         <Text text="{mine>title}"
                             class="sapUiSmallMarginTop sapUiSmallMarginEnd"
                             width="15rem"/>
-                        <StepInput id="quantityInput"
+                        <StepInput
                             change="handler.onChangeQuantity"
                             value="1"
                             class="sapUiSmallMarginEnd"
                             width="8rem"/>
                         <Select class="sapUiSmallMarginBegin"
-                            id="formatSelect"
                             change="handler.onChangeFormat"
                             width="13rem"
                             selectedKey="pb"
