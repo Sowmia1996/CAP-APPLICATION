@@ -3,6 +3,7 @@ package customer.bookshop.handlers;
 import org.springframework.stereotype.Component;
 import com.sap.cds.services.handler.EventHandler;
 import com.sap.cds.services.handler.annotations.ServiceName;
+import com.sap.cds.services.handler.annotations.Before;
 import com.sap.cds.services.handler.annotations.On;
 import com.sap.cds.services.handler.annotations.After;
 import com.sap.cds.services.persistence.PersistenceService;
@@ -37,9 +38,12 @@ public class BooksCatalogHandler implements EventHandler {
         this.db = db;
     }
 
-    @On(event = CreateOrderContext.CDS_NAME)
-    public void onCreateOrder (CreateOrderContext context) {
-        System.out.println("Hi there! custom action is triggered!!");
+    /**
+        1. Perform Book availability check
+        2. Calculate Cart total excluding those that are out of stock
+     */
+    @Before(event = CreateOrderContext.CDS_NAME)
+    public void beforeCreateOrder (CreateOrderContext context) {
         Random rand = new Random();
         Integer orderId = rand.nextInt(1000);
         String orderNo = "ONOX" + Integer.toString(orderId);
@@ -73,15 +77,22 @@ public class BooksCatalogHandler implements EventHandler {
         myOrder.setOrderItems(orderItems);
         myOrder.setTotal(cartTotal);
         myOrder.setCurrencyCode("EUR");
+        context.put("order", myOrder);
+        context.put("orderItems", orderItems);
+    }
+
+    @On(event = CreateOrderContext.CDS_NAME)
+    public void onCreateOrder (CreateOrderContext context) {  
+        Orders myOrder = (Orders)context.get("order");
+        List<Map<String, Object>> orderItems = (List<Map<String, Object>>) context.get("orderItems");
+        String orderNo = myOrder.getOrderNumber();
         
-        // Now insert this into the orders table
+        // insert this into the Orders table
         if (orderItems.size() > 0) {
             db.run(Insert.into(Orders_.CDS_NAME).entry(myOrder));
         }
 
-        context.put("orderItems", orderItems);
-
-        // Send the appropriate response
+        // Set Process Completed
         String responseMsg, acknowledgeMsg;
         if (orderItems.size() == 0) {
             responseMsg = "Order Creation Failed";
