@@ -7,5 +7,6 @@ service ManageOrders {
     actions {
         action cancelOrder () returns ct.createCancelOrderRet;
     };
+    @readonly
     entity Books as projection on bs.Books;
 }
