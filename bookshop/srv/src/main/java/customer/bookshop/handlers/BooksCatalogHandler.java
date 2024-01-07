@@ -45,29 +45,25 @@ public class BooksCatalogHandler implements EventHandler {
     @Before(event = CreateOrderContext.CDS_NAME)
     public void beforeCreateOrder (CreateOrderContext context) {
         Random rand = new Random();
-        Integer orderId = rand.nextInt(1000);
+        Integer orderId = rand.nextInt(1000), reqQuantity, stock;
         String orderNo = "ONOX" + Integer.toString(orderId);
         List<Map<String, Object>> orderItems = new ArrayList<>();
-        BigDecimal cartTotal = BigDecimal.ZERO;
-        Integer reqQuantity;
-        Object stock, price;
-        Optional<Row> book;
+        BigDecimal cartTotal = BigDecimal.ZERO, price;
         Map<String, Object> tempMap;
         for(CreateCancelOrderReq item : context.getItems()) {
             String bookId = item.getBookId();
             Result res =  db.run(Select.from(Books_.CDS_NAME).columns("stock", "price").where(b -> b.get("ID").eq(bookId)));
-            book = res.first();
-            price = book.get().get("price");
+            price = (BigDecimal)res.first().get().get("price");
             reqQuantity = item.getQuantity();
-            stock = book.get().get("stock");
-            if ((Integer)stock >= reqQuantity) {
+            stock = (Integer)res.first().get().get("stock");
+            if (stock >= reqQuantity) {
                 tempMap  = new HashMap<String, Object>();
                 tempMap.put("order_ID", orderId);
                 tempMap.put("item_ID", bookId);
                 tempMap.put("quantity", reqQuantity);
                 tempMap.put("format", item.getFormat());
                 orderItems.add(tempMap);
-                cartTotal = cartTotal.add(BigDecimal.valueOf(reqQuantity).multiply((BigDecimal)price));
+                cartTotal = cartTotal.add(BigDecimal.valueOf(reqQuantity).multiply(price));
             }
         }
         Orders myOrder = Orders.create(orderId);
