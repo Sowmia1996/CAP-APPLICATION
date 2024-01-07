@@ -9,9 +9,11 @@ import com.sap.cds.services.handler.annotations.After;
 import com.sap.cds.services.persistence.PersistenceService;
 
 import cds.gen.bookscatalog.BooksCatalog_;
+import cds.gen.manageorders.ManageOrders_;
 import cds.gen.bookscatalog.CreateOrderContext;
 import cds.gen.sap.capire.customtypes.CreateCancelOrderReq;
 import cds.gen.sap.capire.customtypes.CreateCancelOrderRet;
+import cds.gen.manageorders.OrderCancelledContext;
 import cds.gen.manageorders.Orders_;
 import cds.gen.manageorders.Orders;
 import cds.gen.bookscatalog.Books_;
@@ -78,7 +80,7 @@ public class BooksCatalogHandler implements EventHandler {
     }
 
     @On(event = CreateOrderContext.CDS_NAME)
-    public void onCreateOrder (CreateOrderContext context) {  
+    public void onCreateOrder (CreateOrderContext context) {
         Orders myOrder = (Orders)context.get("order");
         List<Map<String, Object>> orderItems = (List<Map<String, Object>>) context.get("orderItems");
         String orderNo = myOrder.getOrderNumber();
@@ -114,6 +116,22 @@ public class BooksCatalogHandler implements EventHandler {
         for (Map<String, Object> item: orderItems) {
             Integer currentStock = (Integer) db.run(Select.from(Books_.CDS_NAME).columns("stock").where(b -> b.get("ID").eq(item.get("item_ID")))).first().get().get("stock");
             db.run(Update.entity(Books_.CDS_NAME).byId(item.get("item_ID")).data("stock", currentStock - (Integer)item.get("quantity")));
+        }
+    }
+
+    /** 
+        1. Listener for the orderCancelled event emitted from the OrdersService
+        2. Updates the stock of those books that were cancelled
+    */
+    @On(event = OrderCancelledContext.CDS_NAME, service = ManageOrders_.CDS_NAME)
+    public void updateStocksForCancelledItems (OrderCancelledContext context) {
+        System.out.println("Hi there, cancelled order event handler executed");
+        Integer cancelledQuantity, currentStock;
+        for (CreateCancelOrderReq item: context.getData().getItems()) {
+            String bookId = item.getBookId();
+            cancelledQuantity = item.getQuantity();
+            currentStock = (Integer) db.run(Select.from(Books_.CDS_NAME).columns("stock").where(b -> b.get("ID").eq(bookId))).first().get().get("stock");
+            db.run(Update.entity(Books_.CDS_NAME).byId(bookId).data("stock", currentStock + cancelledQuantity));
         }
     }
 }

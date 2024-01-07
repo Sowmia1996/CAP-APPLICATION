@@ -9,4 +9,8 @@ service ManageOrders {
     };
     @readonly
     entity Books as projection on bs.Books;
+
+    event orderCancelled : {
+        items: array of ct.createCancelOrderReq;
+    }
 }
