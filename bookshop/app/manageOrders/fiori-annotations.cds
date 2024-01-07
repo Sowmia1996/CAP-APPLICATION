@@ -2,6 +2,7 @@ using ManageOrders from '../../srv/orders-service';
 
 // List report and Object Page annotations
 annotate ManageOrders.Orders with @(UI : {
+  DeleteHidden : true,
   HeaderInfo  : {
       TypeName : 'Order',
       TypeNamePlural : 'Orders',
