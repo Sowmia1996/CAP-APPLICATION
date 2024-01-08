@@ -1,5 +1,6 @@
 namespace sap.capire.bookshop;
 using { Currency, managed } from '@sap/cds/common';
+using { sap.capire.reviews as reviews} from './reviews';
 
 type Genre : String enum {
   Crime; Mystery; Paranormal; Philosophy; Psychology; Travel; Classics; Art; CookBooks; History; Poetry; Sports; SciFi; Religion; Biography; Business;
@@ -22,6 +23,7 @@ entity Books {
   author_ID : type of Authors:ID;
   author : Association to Authors on author.ID = author_ID;
   orders : Composition of  many OrderItems on orders.item_ID = ID;
+  reviews: Association to many reviews.Reviews on reviews.book = $self;
 }
 
 entity Authors {
