@@ -9,6 +9,13 @@ function (MessageBox, Fragment, Filter, JSONModel, createAddReviewFormContainer)
     "use strict";
 
     const beforeOpenDialog = (oEvent, oParams) => {
+        const oErrorModel = new JSONModel({
+            get hasErrors () {
+                return Object.values(this.inputErrors).some(error => error);
+            },
+            inputErrors: {}
+        });
+        oEvent.getSource().setModel(oErrorModel, "formErrors");
         const {sBindingPath, sDialogId} = oParams;
         const oAddReviewForm = Fragment.byId(sDialogId, "addReviewForm");
         oAddReviewForm.bindAggregation("formContainers", {
@@ -28,6 +35,12 @@ function (MessageBox, Fragment, Filter, JSONModel, createAddReviewFormContainer)
         });
     }
 
+    const setInputError = function (oInputElement, bHasError) {
+        const oErrorModel = oInputElement.getModel("formErrors");
+        const oInputErrors = { ...oErrorModel.getProperty("/inputErrors")};
+        oInputErrors[oInputElement.getId()] = bHasError;
+        oErrorModel.setProperty("/inputErrors", oInputErrors);
+    }
 
     return {
         onChangeQuantity: function (oEvent) {
@@ -172,6 +185,16 @@ function (MessageBox, Fragment, Filter, JSONModel, createAddReviewFormContainer)
             const oReviewBinding = oAddReviewForm.getBinding("formContainers");
             oReviewBinding.resetChanges();
             oAddReviewDialog.close();
+        },
+
+        onValidationError: function (oEvent) {
+            const oInputElement = oEvent.getParameter("element");
+            setInputError(oInputElement, true);
+        },
+
+        onValidationSuccess: function (oEvent) {
+            const oInputElement = oEvent.getParameter("element");
+            setInputError(oInputElement, false);
         }
     };
 });
