@@ -31,6 +31,11 @@ annotate BooksCatalog.Books with @(UI : {
         $Type : 'UI.ReferenceFacet',
         Label : 'Description',
         Target : '@UI.FieldGroup#Descr'
+    },
+    {
+        $Type  : 'UI.ReferenceFacet',
+        Label  : 'Reviews',
+        Target : 'reviews/@UI.LineItem'
     }
   ],
   LineItem : [
@@ -87,3 +92,35 @@ annotate BooksCatalog.Books with @(UI : {
     @UI.HiddenFilter
     descr;
 };
+
+annotate BooksCatalog.Reviews with @(
+    UI : {
+        HeaderInfo : {
+            $Type          : 'UI.HeaderInfoType',
+            TypeName       : 'Reviews',
+            TypeNamePlural : 'Reviews'
+        },
+        LineItem   : [
+            {
+              Value: title,
+              ![@HTML5.CssDefaults] : {width: '15rem'}
+            },
+            {
+              $Type  : 'UI.DataFieldForAnnotation',
+              Target : '@UI.DataPoint#rating',
+              ![@HTML5.CssDefaults] : {width: '15rem'}
+            },
+            {
+                Value : text,
+                Label: 'Review Comment',
+                ![@HTML5.CssDefaults] : {width: '40rem'}
+            },
+        ],
+        DataPoint #rating : {
+          Value : rating,
+          Visualization : #Rating,
+          MinimumValue : 0,
+          MaximumValue : 5
+        }
+    }
+);

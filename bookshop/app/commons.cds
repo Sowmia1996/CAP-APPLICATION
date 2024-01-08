@@ -1,4 +1,5 @@
 using { sap.capire.bookshop as bs } from '../db/schema';
+using {sap.capire.reviews as rs} from '../db/reviews';
 
 annotate bs.Books with {
   title @title : 'Title';
@@ -7,7 +8,7 @@ annotate bs.Books with {
   descr @title: 'Description';
   isbn @title: 'ISBN';
   genre @title: 'Genre';
-  ratings @title: 'Ratings';
+  ratings @title: 'Average Ratings';
 }
 
 annotate  bs.Authors with {
@@ -20,5 +21,11 @@ annotate bs.Orders with {
   status @title: 'Status';
   total @title: 'Order Total';
   shippingAddress @title: 'Deliver To:';
+};
+
+
+annotate  rs.Reviews with {
+  title @title: 'Title';
+  rating @title: 'Rating';
 };
 
