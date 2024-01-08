@@ -6,8 +6,7 @@ annotate ManageOrders.Orders with @(UI : {
   HeaderInfo  : {
       TypeName : 'Order',
       TypeNamePlural : 'Orders',
-      Title: {Value: orderNumber},
-      Description: {Value: status}
+      Title: {Value: orderNumber}
   },
   Identification : [
       {Value : orderNumber}
@@ -15,7 +14,7 @@ annotate ManageOrders.Orders with @(UI : {
   HeaderFacets : [
     {
         $Type : 'UI.ReferenceFacet',
-        Target : '@UI.DataPoint#orderNo'
+        Target : '@UI.DataPoint#total'
     },
     {
         $Type : 'UI.ReferenceFacet',
@@ -29,9 +28,9 @@ annotate ManageOrders.Orders with @(UI : {
         Target : '@UI.FieldGroup#shippingAddress'
     },
     {
-        $Type : 'UI.ReferenceFacet',
-        Label : 'Order Items',
-        Target : '@UI.FieldGroup#items'
+        $Type  : 'UI.ReferenceFacet',
+        Label  : 'Order Items',
+        Target : 'orderItems/@UI.LineItem'
     }
   ],
   LineItem : [
@@ -60,18 +59,44 @@ annotate ManageOrders.Orders with @(UI : {
     Value : status,
     Title : 'Status'
   },
-  DataPoint #orderNo : {
-    Value : orderNumber,
-    Title : 'Order Number'
+  DataPoint #total : {
+    Value : total,
+    Title : 'Order Total'
   },
   FieldGroup #shippingAddress:  {Data : [
     {Value : shippingAddress}
-  ]},
-  FieldGroup #items:  {Data : [
-    {Value : orderItems.item.title}
   ]}
 }){ ID  @UI.Hidden;
 currency @UI.Hidden;
 @Measures.ISOCurrency : currency.symbol
     total;
 };
+
+
+annotate ManageOrders.OrderItems with @(
+    UI : {
+        HeaderInfo : {
+            $Type          : 'UI.HeaderInfoType',
+            TypeName       : 'Order Item',
+            TypeNamePlural : 'Order Items'
+        },
+        LineItem   : [
+            {
+              Value: item.title,
+              ![@HTML5.CssDefaults] : {width: '15rem'}
+            },
+            {
+              Value: item.price,
+              ![@HTML5.CssDefaults] : {width: '15rem'}
+            },
+            {
+              Value: format,
+              ![@HTML5.CssDefaults] : {width: '15rem'}
+            },
+            {
+                Value : quantity,
+                ![@HTML5.CssDefaults] : {width: '15rem'}
+            },
+        ]
+    }
+);

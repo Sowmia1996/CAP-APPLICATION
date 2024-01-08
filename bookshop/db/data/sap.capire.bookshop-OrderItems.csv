@@ -1,4 +1,4 @@
-order_ID,item_ID,quantity
-1,001,2
-1,203,2
-1,222,2
+order_ID,item_ID,quantity,format
+1,001,2,Paper Back
+1,203,2,Kindle Version
+1,222,2,Soft Cover

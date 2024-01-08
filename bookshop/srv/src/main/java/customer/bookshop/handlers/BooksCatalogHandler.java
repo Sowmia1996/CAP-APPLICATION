@@ -78,7 +78,7 @@ public class BooksCatalogHandler implements EventHandler {
         }
         Orders myOrder = Orders.create(orderId);
         myOrder.setOrderNumber(orderNo);
-        myOrder.setStatus("AwaitingConfirmation");
+        myOrder.setStatus("Confirmed");
         myOrder.setShippingAddress(context.getAddress());
         myOrder.setOrderItems(orderItems);
         myOrder.setTotal(cartTotal);

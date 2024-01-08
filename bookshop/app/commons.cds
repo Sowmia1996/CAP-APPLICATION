@@ -23,6 +23,10 @@ annotate bs.Orders with {
   shippingAddress @title: 'Deliver To:';
 };
 
+annotate bs.OrderItems with {
+  quantity @title: 'Quantity Ordered';
+  format @title: 'Format';
+};
 
 annotate  rs.Reviews with {
   title @title: 'Title';
