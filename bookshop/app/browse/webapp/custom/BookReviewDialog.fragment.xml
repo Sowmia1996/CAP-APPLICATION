@@ -1,0 +1,29 @@
+<core:FragmentDefinition
+    xmlns:core="sap.ui.core"
+    xmlns="sap.m"
+    xmlns:l="sap.ui.layout"
+    xmlns:f="sap.ui.layout.form">
+    <Dialog 
+        title="Add Review"
+        core:require="{handler: 'browseBooks/custom/CustomHandler'}">
+        <f:Form id="addReviewForm"
+            editable="true"
+            title="Review Details">
+            <f:layout>
+                <f:ColumnLayout />
+            </f:layout>
+        </f:Form>
+        <buttons>
+            <Button 
+                id="createReviewBtn"
+                text="Submit Review"
+                type="Emphasized"
+                press="handler.submitReview"
+                />
+            <Button 
+                id="cancelReviewBtn"
+                text="Cancel"
+                press="handler.cancelReview"/>
+        </buttons>
+    </Dialog>
+</core:FragmentDefinition>

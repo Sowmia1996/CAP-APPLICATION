@@ -1,5 +1,33 @@
-sap.ui.define(["sap/m/MessageBox", "sap/ui/core/Fragment", "sap/ui/model/Filter", "sap/ui/model/json/JSONModel"], function (MessageBox, Fragment, Filter, JSONModel) {
+sap.ui.define([
+    "sap/m/MessageBox", 
+    "sap/ui/core/Fragment", 
+    "sap/ui/model/Filter", 
+    "sap/ui/model/json/JSONModel",
+    "./createAddReviewFormContainer"
+], 
+function (MessageBox, Fragment, Filter, JSONModel, createAddReviewFormContainer) {
     "use strict";
+
+    const beforeOpenDialog = (oEvent, oParams) => {
+        const {sBindingPath, sDialogId} = oParams;
+        const oAddReviewForm = Fragment.byId(sDialogId, "addReviewForm");
+        oAddReviewForm.bindAggregation("formContainers", {
+            path: `${sBindingPath}/reviews`,
+            template: createAddReviewFormContainer(),
+            length: 1,
+            parameters: {
+                $$updateGroupId: "reviews"
+            }
+        });
+
+        const oReviewBinding = oAddReviewForm.getBinding("formContainers");
+        oReviewBinding.create({
+            rating: 0,
+            title: "",
+            text: ""
+        });
+    }
+
 
     return {
         onChangeQuantity: function (oEvent) {
@@ -100,8 +128,50 @@ sap.ui.define(["sap/m/MessageBox", "sap/ui/core/Fragment", "sap/ui/model/Filter"
             oEvent.getSource().getParent().close();
         },
 
-        onAddReviewPress: function (oEvent) {
-            MessageBox.show("Hi, this isn't implemented yet!");
+        onAddReviewPress: async function (oEvent) {
+            const oBooksListPage = sap.ui.getCore().byId("browseBooks::BooksList");
+            if (!this.oAddReviewDialog) {
+                this.oAddReviewDialogId = `${oBooksListPage.getId()}-BookReviewDialog`;
+                this.oAddReviewDialog = await Fragment.load({
+                    id: this.oAddReviewDialogId,
+                    name: "browseBooks.custom.BookReviewDialog"
+                });
+                oBooksListPage.addDependent(this.oAddReviewDialog);
+            }
+
+            const sBindingPath = oEvent.getSource().getParent().getParent().getBindingContextPath();
+            const oParams = {
+                sBindingPath,
+                sDialogId: this.oAddReviewDialogId
+            } 
+
+            this.oAddReviewDialog.attachBeforeOpen(oParams, beforeOpenDialog);
+            this.oAddReviewDialog.open();
+            this.oAddReviewDialog.detachBeforeOpen(beforeOpenDialog);
+        },
+
+        submitReview: async function (oEvent) {
+            const oAddReviewDialog = oEvent.getSource().getParent();
+            oAddReviewDialog.setBusy(true);
+            try {
+                await oAddReviewDialog.getModel().submitBatch("reviews");
+                MessageBox.show("Review Submitted Successfully");
+                oAddReviewDialog.close();
+            } catch (error) {
+                MessageBox.show(error.message);
+            } finally {
+                oAddReviewDialog.setBusy(false);
+            }
+        },
+
+        cancelReview: function (oEvent) {
+            const oAddReviewDialog = oEvent.getSource().getParent();
+            const oBooksListPage = sap.ui.getCore().byId("browseBooks::BooksList");
+            const oAddReviewDialogId = `${oBooksListPage.getId()}-BookReviewDialog`;
+            const oAddReviewForm = Fragment.byId( oAddReviewDialogId, "addReviewForm");
+            const oReviewBinding = oAddReviewForm.getBinding("formContainers");
+            oReviewBinding.resetChanges();
+            oAddReviewDialog.close();
         }
     };
 });
