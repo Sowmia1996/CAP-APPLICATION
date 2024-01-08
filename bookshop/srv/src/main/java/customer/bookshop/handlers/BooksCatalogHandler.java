@@ -7,10 +7,14 @@ import com.sap.cds.services.handler.annotations.Before;
 import com.sap.cds.services.handler.annotations.On;
 import com.sap.cds.services.handler.annotations.After;
 import com.sap.cds.services.persistence.PersistenceService;
+import com.sap.cds.ql.cqn.CqnAnalyzer;
+import com.sap.cds.reflect.CdsModel;
+import com.sap.cds.ql.cqn.CqnSelect;
 
 import cds.gen.bookscatalog.BooksCatalog_;
 import cds.gen.manageorders.ManageOrders_;
 import cds.gen.bookscatalog.CreateOrderContext;
+import cds.gen.bookscatalog.AddReviewContext;
 import cds.gen.sap.capire.customtypes.CreateCancelOrderReq;
 import cds.gen.sap.capire.customtypes.CreateCancelOrderRet;
 import cds.gen.manageorders.OrderCancelledContext;
@@ -18,6 +22,8 @@ import cds.gen.manageorders.Orders_;
 import cds.gen.manageorders.Orders;
 import cds.gen.bookscatalog.Books_;
 import cds.gen.bookscatalog.Books;
+import cds.gen.bookscatalog.Reviews_;
+import cds.gen.bookscatalog.Reviews;
 
 import java.util.*;
 import java.math.BigDecimal;
@@ -35,9 +41,11 @@ import com.sap.cds.Row;
 public class BooksCatalogHandler implements EventHandler {
 
     private final PersistenceService db;
+    private final CqnAnalyzer analyzer;
 
-    BooksCatalogHandler(PersistenceService db) {
+    BooksCatalogHandler(PersistenceService db, CdsModel model) {
         this.db = db;
+        this.analyzer = CqnAnalyzer.create(model);
     }
 
     /**
@@ -133,5 +141,28 @@ public class BooksCatalogHandler implements EventHandler {
             currentStock = (Integer) db.run(Select.from(Books_.CDS_NAME).columns("stock").where(b -> b.get("ID").eq(bookId))).first().get().get("stock");
             db.run(Update.entity(Books_.CDS_NAME).byId(bookId).data("stock", currentStock + cancelledQuantity));
         }
+    }
+
+    @On(event = AddReviewContext.CDS_NAME)
+    public void onAddReview (AddReviewContext context) {
+        System.out.println("Hi there, addreview on handler is called");
+
+        // GET BOOK ID
+        CqnSelect select = context.getCqn();
+        String bookId = (String)analyzer.analyze(select).targetKeys().get(Books.ID);
+
+        // Create Payload
+        Reviews review = Reviews.create();
+        review.setBookId(bookId);
+        review.setTitle(context.getTitle());
+        review.setText(context.getText());
+        review.setRating(context.getRating());
+
+        // Insert in DB
+        Result res = db.run(Insert.into(Reviews_.CDS_NAME).entry(review));
+
+        // Set process Completed
+        Reviews savedReview = res.single(Reviews.class);
+        context.setResult(savedReview);
     }
 }
