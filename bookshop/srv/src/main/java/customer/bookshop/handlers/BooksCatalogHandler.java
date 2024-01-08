@@ -9,12 +9,12 @@ import com.sap.cds.services.handler.annotations.After;
 import com.sap.cds.services.persistence.PersistenceService;
 import com.sap.cds.ql.cqn.CqnAnalyzer;
 import com.sap.cds.reflect.CdsModel;
-import com.sap.cds.ql.cqn.CqnSelect;
+import com.sap.cds.services.cds.CdsCreateEventContext;
+import com.sap.cds.services.cds.CqnService;
 
 import cds.gen.bookscatalog.BooksCatalog_;
 import cds.gen.manageorders.ManageOrders_;
 import cds.gen.bookscatalog.CreateOrderContext;
-import cds.gen.bookscatalog.AddReviewContext;
 import cds.gen.sap.capire.customtypes.CreateCancelOrderReq;
 import cds.gen.sap.capire.customtypes.CreateCancelOrderRet;
 import cds.gen.manageorders.OrderCancelledContext;
@@ -27,6 +27,7 @@ import cds.gen.bookscatalog.Reviews;
 
 import java.util.*;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import com.sap.cds.Result;
 import com.sap.cds.ql.Insert;
@@ -143,26 +144,22 @@ public class BooksCatalogHandler implements EventHandler {
         }
     }
 
-    @On(event = AddReviewContext.CDS_NAME)
-    public void onAddReview (AddReviewContext context) {
-        System.out.println("Hi there, addreview on handler is called");
-
+    /**
+        After a review has been submitted, recalculate the average rating of the Book and persist it
+     */
+    @After(event = CqnService.EVENT_CREATE, entity = Reviews_.CDS_NAME)
+    public void afterAddReview (CdsCreateEventContext context) {
+        System.out.println("Hi there, addreview after handler is called");
         // GET BOOK ID
-        CqnSelect select = context.getCqn();
-        String bookId = (String)analyzer.analyze(select).targetKeys().get(Books.ID);
-
-        // Create Payload
-        Reviews review = Reviews.create();
-        review.setBookId(bookId);
-        review.setTitle(context.getTitle());
-        review.setText(context.getText());
-        review.setRating(context.getRating());
-
-        // Insert in DB
-        Result res = db.run(Insert.into(Reviews_.CDS_NAME).entry(review));
-
-        // Set process Completed
-        Reviews savedReview = res.single(Reviews.class);
-        context.setResult(savedReview);
+        String bookId = context.getResult().single(Reviews.class).getBookId();
+        Books book = db.run(Select.from(Books_.class).columns(a -> a.reviews().expand()).where(b -> b.ID().eq(bookId))).single(Books.class);
+        List<Reviews> reviews = book.getReviews();
+        BigDecimal totalRating = BigDecimal.ZERO, avgRating;
+        Integer noOfReviews = reviews.size();
+        for (Reviews review: reviews) {
+            totalRating = totalRating.add(BigDecimal.valueOf(review.getRating()));
+        }
+        avgRating = totalRating.divide(BigDecimal.valueOf(noOfReviews), 2, RoundingMode.HALF_EVEN);
+        db.run(Update.entity(Books_.CDS_NAME).byId(bookId).data("ratings", avgRating));
     }
 }

@@ -168,6 +168,7 @@ function (MessageBox, Fragment, Filter, JSONModel, createAddReviewFormContainer)
             oAddReviewDialog.setBusy(true);
             try {
                 await oAddReviewDialog.getModel().submitBatch("reviews");
+                this.getModel().refresh();
                 MessageBox.show("Review Submitted Successfully");
                 oAddReviewDialog.close();
             } catch (error) {
